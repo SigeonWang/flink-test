@@ -1,6 +1,7 @@
-package com.wxj.stream
+package com.wxj.scala.stream
 
-import org.apache.flink.configuration.Configuration
+import org.apache.flink.api.common.RuntimeExecutionMode
+import org.apache.flink.configuration.{Configuration, RestOptions}
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 
@@ -11,11 +12,15 @@ import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
  *    DataStream API 最后需要调用execute()方法触发执行.
  *
  */
-object SocketWordCount {
+object SocketWordCountScala {
   def main(args: Array[String]): Unit = {
     // TODO 1、创建环境
+
+    val conf = new Configuration()  // 不添加配置项的话就都用默认的配置
+    conf.set(RestOptions.BIND_PORT, 8081)
+
     // 带web ui的本地测试环境，一般只用于测试。需要引入以来flink-runtime-web。
-     val env = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(new Configuration())
+     val env = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(conf)
     // 推荐做法，自动推测运行环境
 //    val env = StreamExecutionEnvironment.getExecutionEnvironment
 
@@ -29,6 +34,10 @@ object SocketWordCount {
     //    也可以针对某个算子进行禁用，其前后都不会加入算子链：flatMap().disableChaining()
     //    也可以针对某个算子开启后续的算子链，flatMap().startNewChain()
 //    env.disableOperatorChaining()
+
+    // 新版flink流批一体，默认流，可以设置DataSet还是DataStream，使用一套代码。
+    // 一般通过命令提交时指定：-Dexecution.runtime-mode=Batch
+    env.setRuntimeMode(RuntimeExecutionMode.STREAMING)
 
     // TODO 2、读取数据源
     val linesDS = env.socketTextStream("localhost", 6666)

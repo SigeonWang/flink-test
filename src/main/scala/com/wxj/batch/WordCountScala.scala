@@ -11,7 +11,7 @@ import org.apache.flink.api.scala.ExecutionEnvironment
  *    flink1.12开始DataSet API已被逐渐弃用，官方建议使用Table API / SQL执行批处理，或者使用带有批处理的DataStream API.
  *
  */
-object WordCount {
+object WordCountScala {
   def main(args: Array[String]): Unit = {
     // 1、创建环境
     val env = ExecutionEnvironment.getExecutionEnvironment
