@@ -11,6 +11,7 @@ import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.CheckpointConfig;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 
 import java.time.Duration;
@@ -34,14 +35,16 @@ public class KafkaEosDemo {
         checkpointConfig.setExternalizedCheckpointCleanup(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
 
         // TODO 2、读取Kafka
-        // 在新版source架构下，如果需要从外部系统导入数据，那么需要添加连接器导入相关依赖 flink-connector-kafka
+        // 在 EXACTLY_ONCE语义下读取Kafka，需满足以下条件：
+        //     1）开启chk
+        //     2）设置消费者事务隔离级别为 read_committed
         KafkaSource<String> kafkaSource = KafkaSource.<String>builder()  // builder()是泛型方法，需要指定类型
                 .setBootstrapServers("hadoop01:9092,hadoop02:9092,hadoop03:9092")
                 .setGroupId("flink-test-consumer")
                 .setTopics("topic_1")
                 .setValueOnlyDeserializer(new SimpleStringSchema())
                 .setStartingOffsets(OffsetsInitializer.latest())
-//                .setProperty();  // 通用的参数设置方法，一般常用的已经封装好方法，直接使用即可。
+                .setProperty(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed")
                 .build();
 
         DataStreamSource<String> kafkaDs = env.fromSource(
@@ -80,7 +83,6 @@ public class KafkaEosDemo {
                 .build();
 
         kafkaDs.sinkTo(kafkaSink);
-
         env.execute();
 
     }
