@@ -29,6 +29,7 @@ under the License.
 	<name>Flink Quickstart Job</name>
 
 	<repositories>
+		<!-- 添加Apache快照仓库，有些非正式版的jar包需要在这里下载 -->
 		<repository>
 			<id>apache.snapshots</id>
 			<name>Apache Development Snapshot Repository</name>
@@ -103,16 +104,42 @@ under the License.
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- RocksDB 状态后端-->
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-statebackend-rocksdb</artifactId>
+			<version>${flink.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- Add connector dependencies here. They must be in the default scope (compile). -->
-
-		<!-- Example:
-
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-connector-files</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-connector-datagen</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-connector-kafka</artifactId>
 			<version>${flink.version}</version>
 		</dependency>
-		-->
+		<!-- jdbc 连接器 (需要配合mysql驱动)-->
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-connector-jdbc</artifactId>
+			<version>3.1.2-1.17</version>
+		</dependency>
+		<!-- mysql 驱动 -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.32</version>
+		</dependency>
 
 		<!-- Add logging framework, to produce console output when running in the IDE. -->
 		<!-- These dependencies are excluded from the application JAR by default. -->

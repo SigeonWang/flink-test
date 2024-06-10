@@ -17,7 +17,6 @@ object SocketWordCountScala {
     // TODO 1、创建环境
 
     val conf = new Configuration()  // 不添加配置项的话就都用默认的配置
-    conf.set(RestOptions.BIND_PORT, 8081)
 
     // 带web ui的本地测试环境，一般只用于测试。需要引入以来flink-runtime-web。
      val env = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(conf)
